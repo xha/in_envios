@@ -158,7 +158,7 @@ class SiteController extends Controller
                             break;
                         }
 
-                        if ($model->letra=='B') {
+                        if ($model->letra=='A') {
                             $pdf = new \fpdf\FPDF('L','mm','Letter');
                             $pdf->SetAutoPageBreak(false,35);
                             $pdf->AddPage();
@@ -315,11 +315,10 @@ class SiteController extends Controller
 
                             $pdf->Footer(200);
                             $filename="assets/".date('His',time()).".pdf";
-                            //$pdf->Output($filename,'F');
-                            $pdf->Output();
+                            $pdf->Output($filename,'F');
                             exit;
                         }
-                        die;
+                        
                         $content = $concepto["texto"];
                         $content = str_replace("#NUMERO#", "<b>".$safact[$i]['NumeroD']."</b>", $content);
                         $content = str_replace("#NROCONTROL#", "<b>".$safact[$i]['NroCtrol']."</b>", $content);
@@ -393,7 +392,7 @@ class SiteController extends Controller
 
                         $transaction = $connection->beginTransaction();
                         try {
-                            if ($model->letra=='B') {
+                            if ($model->letra=='A') {
                                 Yii::$app -> mailer -> compose()
                                 -> setFrom($c_correo)
                                 -> setTo($safact[$i]['Email'])
