@@ -38,8 +38,8 @@ $config = [
             'transport' => [
                 'class' => 'Swift_SmtpTransport',
                 'host' => gethostbyname('smtp.gmail.com'),
-                'username' => 'xhambler84',
-                'password' => 'v6469814',
+                'username' => '',
+                'password' => '',
                 'port' => '465',
                 'encryption' => 'ssl',
                 'streamOptions' => [ 'ssl' =>
