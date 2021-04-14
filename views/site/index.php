@@ -22,7 +22,7 @@ if (Yii::$app->user->isGuest) {
     echo "<div class='central2'>
                 <aside class='main-aside2'>
                     <div class='stroke2 titulo_core'>
-                        Envio de correos <br />Alquiler
+                        Envio de correos
                     </div>
                 </aside>
             </div>";
@@ -101,7 +101,7 @@ if (Yii::$app->user->isGuest) {
         </div>
         <div class="col-sm-5"></div>
         <div class="col-sm-1">
-            <img id='img_busqueda' style='visibility: hidden' src='../../../img/preloader.gif' />
+            <img id='img_busqueda' style='visibility: hidden' src='../web/img/preloader.gif' />
         </div>
     </div>
     <?php ActiveForm::end(); ?>

@@ -51,6 +51,14 @@ echo "<div class='row' style='max-height: 600px; overflow: auto; width: 100%'>
 						<td>Imprime el Impuesto Global</td>
 					</tr>
 					<tr>
+						<td>RIFCLIENTE</td>
+						<td>Imprime el Rif del Cliente</td>
+					</tr>
+					<tr>
+						<td>NOMBRECLIENTE</td>
+						<td>Imprime la razón social del cliente</td>
+					</tr>
+					<tr>
 						<td>ITEMS</td>
 						<td>Imprime una tabla con todos los items del documento</td>
 					</tr>

@@ -101,7 +101,7 @@ class SiteController extends Controller
         {
             if($model->validate()) {
                 date_default_timezone_set('America/Caracas');
-                $c_correo = 'xhambler84@gmail.com';
+                $c_correo = 'facturacion@alimentosdonnino.com';
                 $correo = array();
                 $extra = "";
                 if ($model->CodVend!="") $extra = " and f.CodVend='".$model->CodVend."'";
@@ -113,7 +113,7 @@ class SiteController extends Controller
                 $correos_errados = "";
                 $contador = 0;
                 
-                $query = "SELECT *,i.Email,CONVERT(VARCHAR(10), f.FechaE, 105) as Fecha_Despacho,CONVERT(VARCHAR(10), f.FechaV, 105) as Fecha_Vencimiento, v.Descrip as Vendedor
+                $query = "SELECT *,i.Email,CONVERT(VARCHAR(10), f.FechaE, 105) as Fecha_Despacho,CONVERT(VARCHAR(10), f.FechaV, 105) as Fecha_Vencimiento, v.Descrip as Vendedor, f.Descrip as Cliente
                         from SAFACT f, SACLIE i, SAVEND v
                         WHERE f.TipoFac='".$model->letra."' and i.CodClie=f.CodClie and f.FechaE Between '$fecha_desde' and '$fecha_hasta' and f.CodVend=v.CodVend $extra
                         and F.NumeroD Not in (select NumeroD From ISAL_CorreosProcesados WHERE fecha between '$fecha_desde' and '$fecha_hasta' and TipoFac='".$model->letra."')";
@@ -131,9 +131,9 @@ class SiteController extends Controller
                         $queryc = "SELECT * from ISAL_Conceptos WHERE letra='".$model->letra."'";
                         $concepto = $connection->createCommand($queryc)->queryOne();
                         if (trim($model->asunto)!=="") {
-                            $titulo = $model->asunto;
+                            $t_titulo = $model->asunto;
                         } else {
-                            $titulo = $concepto["descripcion"];
+                            $t_titulo = $concepto["descripcion"];
                         }                        
 
                         $tipo_factura = "";
@@ -158,6 +158,8 @@ class SiteController extends Controller
                             break;
                         }
 
+                        $filename='';
+
                         if ($model->letra=='A') {
                             $pdf = new \fpdf\FPDF('L','mm','Letter');
                             $pdf->SetAutoPageBreak(false,35);
@@ -176,8 +178,9 @@ class SiteController extends Controller
                             $pdf->SetX(50);
                             $pdf->Cell(180,6,$emp["Email"],0,0,'C');
                             $pdf->Cell(40,6,'No. DE CONTROL:',0,1,'L');
-                            $pdf->SetX(180);
-                            $pdf->Cell(40,6,$safact[$i]['NroCtrol'],0,1,'L');
+                            $pdf->ln();
+                            //$pdf->SetX(180);
+                            //$pdf->Cell(40,6,$safact[$i]['NroCtrol'],0,1,'L');
                             
                             $pdf->SetFont('Arial','B',9);
                             $pdf->Cell(40,6,"Fecha:",0,0,'C');
@@ -191,7 +194,7 @@ class SiteController extends Controller
                             $pdf->SetFont('Arial','B',9);
                             $pdf->Cell(40,6,"Cliente:",0,0,'C');
                             $pdf->SetFont('Arial','',9);
-                            $pdf->Cell(80,6,utf8_decode($safact[$i]["Descrip"]),0,0,'L');
+                            $pdf->Cell(80,6,utf8_decode($safact[$i]["Cliente"]),0,0,'L');
                             if ($safact[$i]["CancelA"] > 0) {
                                 $cond = "CONTADO";
                             } else {                
@@ -270,7 +273,7 @@ class SiteController extends Controller
                                 $y++;
                             }
 
-                            $pdf->setY(170);
+                            $pdf->setY(160);
                             $pdf->Cell(160,6,utf8_decode("Observación: Para ser pagado según el tipo de cambio publicado por BCV"),1,0,'L');
                             $pdf->SetFont('Arial','B',9);
                             $pdf->Cell(40,6,"",0,0,'L');
@@ -312,14 +315,33 @@ class SiteController extends Controller
                             $pdf->Cell(20,6,utf8_decode("Total a Pagar"),0,0,'L');
                             $pdf->SetFont('Arial','',9);
                             $pdf->Cell(30,6,number_format($safact[$i]['MtoTotal'], 2, '.', ','),0,1,'R');
-
+                            $pdf->ln(2);
+                            $pdf->MultiCell(260,6,utf8_decode("Le recordamos que este ejemplar digital sólo ha sido emitido con el propósito de facilitar la logística de la entrega de los productos"),0,'C');
+                            $pdf->SetFont('Arial','B',10);
+                            $pdf->SetTextColor(194,8,8);
+                            $pdf->MultiCell(260,5,utf8_decode("ORIGINAL_CLIENTE"),0,'C');
+                            $pdf->SetTextColor(0,0,0);
+                            $pdf->SetFont('Arial','',9);
                             $pdf->Footer(200);
                             $filename="assets/".date('His',time()).".pdf";
                             $pdf->Output($filename,'F');
-                            exit;
+                            //$pdf->Output();die;
                         }
                         
+                        //ASUNTO
+                        $t_titulo = str_replace("#RIFCLIENTE#", "<b>".$safact[$i]['CodClie']."</b>", $t_titulo);
+                        $t_titulo = str_replace("#NOMBRECLIENTE#", "<b>".$safact[$i]['Cliente']."</b>", $t_titulo);
+                        $t_titulo = str_replace("#NUMERO#", "<b>".$safact[$i]['NumeroD']."</b>", $t_titulo);
+                        $t_titulo = str_replace("#NROCONTROL#", "<b>".$safact[$i]['NroCtrol']."</b>", $t_titulo);
+                        $t_titulo = str_replace("#TIPO#", "<b>".$tipo_factura."</b>", $t_titulo);
+                        $t_titulo = str_replace("#TOTAL#", "<b>".number_format($safact[$i]['MtoTotal'], 2, '.', ',')."</b>", $t_titulo);
+                        $t_titulo = str_replace("#EXENTO#", "<b>".number_format($safact[$i]['TExento'], 2, '.', ',')."</b>", $t_titulo);
+                        $t_titulo = str_replace("#GRAVABLE#", "<b>".number_format($safact[$i]['TGravable'], 2, '.', ',')."</b>", $t_titulo);
+                        $t_titulo = str_replace("#IMPUESTO#", "<b>".number_format($safact[$i]['MtoTax'], 2, '.', ',')."</b>", $t_titulo);
+                        //CUERPO
                         $content = $concepto["texto"];
+                        $content = str_replace("#RIFCLIENTE#", "<b>".$safact[$i]['CodClie']."</b>", $content);
+                        $content = str_replace("#NOMBRECLIENTE#", "<b>".$safact[$i]['Cliente']."</b>", $content);
                         $content = str_replace("#NUMERO#", "<b>".$safact[$i]['NumeroD']."</b>", $content);
                         $content = str_replace("#NROCONTROL#", "<b>".$safact[$i]['NroCtrol']."</b>", $content);
                         $content = str_replace("#TIPO#", "<b>".$tipo_factura."</b>", $content);
@@ -396,21 +418,21 @@ class SiteController extends Controller
                                 Yii::$app -> mailer -> compose()
                                 -> setFrom($c_correo)
                                 -> setTo($safact[$i]['Email'])
-                                -> setAttachment($filename)
-                                -> setSubject($titulo)
+                                -> attach($filename)
+                                -> setSubject($t_titulo)
                                 -> setHtmlBody($content)
                                 -> send();
+                                @unlink($filename);
                             } else {
                                 Yii::$app -> mailer -> compose()
                                 -> setFrom($c_correo)
                                 -> setTo($safact[$i]['Email'])
-                                -> setSubject($titulo)
+                                -> setSubject($t_titulo)
                                 -> setHtmlBody($content)
                                 -> send();    
                             }                            
 
                             $transaction->commit();
-                            @unlink($filename);
                         } catch (\Exception $msg) {
                             $transaction->rollBack();
                             $mensaje = "<p><h3 class='text-danger'>Error: El correo cerró la conexion.</h3></br />
@@ -475,7 +497,7 @@ class SiteController extends Controller
     public function actionImprimeDetallado($nro)
     {
         $connection = \Yii::$app->db;
-        $query = "SELECT *,i.Email,CONVERT(VARCHAR(10), f.FechaE, 105) as Fecha_Despacho,f.CodVend as Vendedor
+        $query = "SELECT *,i.Email,CONVERT(VARCHAR(10), f.FechaE, 105) as Fecha_Despacho,f.CodVend as Vendedor, f.Descrip as Ciente
                 from SAFACT f, SACLIE i WHERE i.CodClie=f.CodClie and NroUnico=".$nro;
         $safact = $connection->createCommand($query)->queryOne();
 
@@ -486,7 +508,7 @@ class SiteController extends Controller
                 <table border='0' class='table table-striped table-bordered' class='font-size: 32px'>
                     <tr>
                         <td width='7%' align='left'><b>Cliente: </b></td>
-                        <td align='left' width='60%'>".$safact['Descrip']."</td>
+                        <td align='left' width='60%'>".$safact['Cliente']."</td>
                         <td align='right'><b>No. : </b></td>
                         <td align='left' width='7%'>".$safact['NumeroD']."</td>
                     </tr>
