@@ -113,7 +113,7 @@ class SiteController extends Controller
                 $correos_errados = "";
                 $contador = 0;
                 
-                $query = "SELECT *,i.Email,CONVERT(VARCHAR(10), f.FechaE, 105) as Fecha_Despacho,CONVERT(VARCHAR(10), f.FechaV, 105) as Fecha_Vencimiento, v.Descrip as Vendedor, f.Descrip as Cliente
+                $query = "SELECT *,i.Email,CONVERT(VARCHAR(10), f.FechaE, 105) as Fecha_Despacho,CONVERT(VARCHAR(10), f.FechaV, 105) as Fecha_Vencimiento, v.Descrip as Vendedor, f.ID3 as RifCliente, f.Direc1 as Direccion1, f.Direc2 as Direccion2, f.Telef as Telefono, f.Descrip as Cliente
                         from SAFACT f, SACLIE i, SAVEND v
                         WHERE f.TipoFac='".$model->letra."' and i.CodClie=f.CodClie and f.FechaE Between '$fecha_desde' and '$fecha_hasta' and f.CodVend=v.CodVend $extra
                         and F.NumeroD Not in (select NumeroD From ISAL_CorreosProcesados WHERE fecha between '$fecha_desde' and '$fecha_hasta' and TipoFac='".$model->letra."')";
@@ -208,7 +208,7 @@ class SiteController extends Controller
                             $pdf->SetFont('Arial','B',9);
                             $pdf->Cell(40,6,"R.I.F.:",0,0,'C');
                             $pdf->SetFont('Arial','',9);
-                            $pdf->Cell(80,6,$safact[$i]["ID3"],0,0,'L');
+                            $pdf->Cell(80,6,$safact[$i]["RifCliente"],0,0,'L');
                             $pdf->SetFont('Arial','B',9);
                             $pdf->Cell(90,6,"Fecha de Vencimiento",0,0,'R');
                             $pdf->SetFont('Arial','',9);
@@ -217,9 +217,9 @@ class SiteController extends Controller
                             $pdf->SetFont('Arial','B',9);
                             $pdf->Cell(40,6,utf8_decode("Dirección:"),0,0,'C');
                             $pdf->SetFont('Arial','',9);
-                            $pdf->Cell(80,6,utf8_decode($safact[$i]["Direc1"]),0,1,'L');
+                            $pdf->Cell(80,6,utf8_decode($safact[$i]["Direccion1"]),0,1,'L');
                             $pdf->Cell(40,6,"",0,0,'C');
-                            $pdf->Cell(80,6,utf8_decode($safact[$i]["Direc2"]),0,0,'L');
+                            $pdf->Cell(80,6,utf8_decode($safact[$i]["Direccion2"]),0,0,'L');
                             $pdf->SetFont('Arial','B',9);
                             $pdf->Cell(90,6,"Forma de Pago:",0,0,'R');
                             $pdf->SetFont('Arial','',9);
@@ -228,7 +228,7 @@ class SiteController extends Controller
                             $pdf->SetFont('Arial','B',9);
                             $pdf->Cell(40,6,utf8_decode("Teléfono:"),0,0,'C');
                             $pdf->SetFont('Arial','',9);
-                            $pdf->Cell(80,6,utf8_decode($safact[$i]["Telef"]),0,0,'L');
+                            $pdf->Cell(80,6,utf8_decode($safact[$i]["Telefono"]),0,0,'L');
                             $pdf->SetFont('Arial','B',9);
                             $pdf->Cell(90,6,"Vendedor:",0,0,'R');
                             $pdf->SetFont('Arial','',9);
@@ -237,7 +237,7 @@ class SiteController extends Controller
                             $pdf->SetFont('Arial','B',9);
                             $pdf->Cell(40,6,utf8_decode("Contacto:"),0,0,'C');
                             $pdf->SetFont('Arial','',9);
-                            $pdf->Cell(80,6,"",0,1,'L');
+                            $pdf->Cell(80,6,utf8_decode($safact[$i]["Represent"]),0,1,'L');
                             
                             $pdf->SetFillColor(192,192,192); //Gris
                             $pdf->Cell(25,6,utf8_decode('Código'),1,0,'C');
@@ -325,30 +325,29 @@ class SiteController extends Controller
                             $pdf->Footer(200);
                             $filename="assets/".date('His',time()).".pdf";
                             $pdf->Output($filename,'F');
-                            //$pdf->Output();die;
                         }
                         
                         //ASUNTO
-                        $t_titulo = str_replace("#RIFCLIENTE#", "<b>".$safact[$i]['CodClie']."</b>", $t_titulo);
-                        $t_titulo = str_replace("#NOMBRECLIENTE#", "<b>".$safact[$i]['Cliente']."</b>", $t_titulo);
-                        $t_titulo = str_replace("#NUMERO#", "<b>".$safact[$i]['NumeroD']."</b>", $t_titulo);
-                        $t_titulo = str_replace("#NROCONTROL#", "<b>".$safact[$i]['NroCtrol']."</b>", $t_titulo);
-                        $t_titulo = str_replace("#TIPO#", "<b>".$tipo_factura."</b>", $t_titulo);
-                        $t_titulo = str_replace("#TOTAL#", "<b>".number_format($safact[$i]['MtoTotal'], 2, '.', ',')."</b>", $t_titulo);
-                        $t_titulo = str_replace("#EXENTO#", "<b>".number_format($safact[$i]['TExento'], 2, '.', ',')."</b>", $t_titulo);
-                        $t_titulo = str_replace("#GRAVABLE#", "<b>".number_format($safact[$i]['TGravable'], 2, '.', ',')."</b>", $t_titulo);
-                        $t_titulo = str_replace("#IMPUESTO#", "<b>".number_format($safact[$i]['MtoTax'], 2, '.', ',')."</b>", $t_titulo);
+                        $t_titulo = str_replace("#RIFCLIENTE#", $safact[$i]['CodClie'], $t_titulo);
+                        $t_titulo = str_replace("#NOMBRECLIENTE#", $safact[$i]['Cliente'], $t_titulo);
+                        $t_titulo = str_replace("#NUMERO#", $safact[$i]['NumeroD'], $t_titulo);
+                        $t_titulo = str_replace("#NROCONTROL#", $safact[$i]['NroCtrol'], $t_titulo);
+                        $t_titulo = str_replace("#TIPO#", $tipo_factura, $t_titulo);
+                        $t_titulo = str_replace("#TOTAL#", number_format($safact[$i]['MtoTotal'], 2, '.', ','), $t_titulo);
+                        $t_titulo = str_replace("#EXENTO#", number_format($safact[$i]['TExento'], 2, '.', ','), $t_titulo);
+                        $t_titulo = str_replace("#GRAVABLE#", number_format($safact[$i]['TGravable'], 2, '.', ','), $t_titulo);
+                        $t_titulo = str_replace("#IMPUESTO#", number_format($safact[$i]['MtoTax'], 2, '.', ','), $t_titulo);
                         //CUERPO
                         $content = $concepto["texto"];
-                        $content = str_replace("#RIFCLIENTE#", "<b>".$safact[$i]['CodClie']."</b>", $content);
-                        $content = str_replace("#NOMBRECLIENTE#", "<b>".$safact[$i]['Cliente']."</b>", $content);
-                        $content = str_replace("#NUMERO#", "<b>".$safact[$i]['NumeroD']."</b>", $content);
-                        $content = str_replace("#NROCONTROL#", "<b>".$safact[$i]['NroCtrol']."</b>", $content);
-                        $content = str_replace("#TIPO#", "<b>".$tipo_factura."</b>", $content);
-                        $content = str_replace("#TOTAL#", "<b>".number_format($safact[$i]['MtoTotal'], 2, '.', ',')."</b>", $content);
-                        $content = str_replace("#EXENTO#", "<b>".number_format($safact[$i]['TExento'], 2, '.', ',')."</b>", $content);
-                        $content = str_replace("#GRAVABLE#", "<b>".number_format($safact[$i]['TGravable'], 2, '.', ',')."</b>", $content);
-                        $content = str_replace("#IMPUESTO#", "<b>".number_format($safact[$i]['MtoTax'], 2, '.', ',')."</b>", $content);
+                        $content = str_replace("#RIFCLIENTE#", $safact[$i]['CodClie'], $content);
+                        $content = str_replace("#NOMBRECLIENTE#", $safact[$i]['Cliente'], $content);
+                        $content = str_replace("#NUMERO#", $safact[$i]['NumeroD'], $content);
+                        $content = str_replace("#NROCONTROL#", $safact[$i]['NroCtrol'], $content);
+                        $content = str_replace("#TIPO#", $tipo_factura, $content);
+                        $content = str_replace("#TOTAL#", number_format($safact[$i]['MtoTotal'], 2, '.', ','), $content);
+                        $content = str_replace("#EXENTO#", number_format($safact[$i]['TExento'], 2, '.', ','), $content);
+                        $content = str_replace("#GRAVABLE#", number_format($safact[$i]['TGravable'], 2, '.', ','), $content);
+                        $content = str_replace("#IMPUESTO#", number_format($safact[$i]['MtoTax'], 2, '.', ','), $content);
                         $pos = strpos($content, "#ITEMS#");
                         $content = str_replace("#ITEMS#", "", $content);
                         if ($pos) {
@@ -497,7 +496,7 @@ class SiteController extends Controller
     public function actionImprimeDetallado($nro)
     {
         $connection = \Yii::$app->db;
-        $query = "SELECT *,i.Email,CONVERT(VARCHAR(10), f.FechaE, 105) as Fecha_Despacho,f.CodVend as Vendedor, f.Descrip as Ciente
+        $query = "SELECT *,i.Email,CONVERT(VARCHAR(10), f.FechaE, 105) as Fecha_Despacho,f.CodVend as Vendedor
                 from SAFACT f, SACLIE i WHERE i.CodClie=f.CodClie and NroUnico=".$nro;
         $safact = $connection->createCommand($query)->queryOne();
 
@@ -508,7 +507,7 @@ class SiteController extends Controller
                 <table border='0' class='table table-striped table-bordered' class='font-size: 32px'>
                     <tr>
                         <td width='7%' align='left'><b>Cliente: </b></td>
-                        <td align='left' width='60%'>".$safact['Cliente']."</td>
+                        <td align='left' width='60%'>".$safact['Descrip']."</td>
                         <td align='right'><b>No. : </b></td>
                         <td align='left' width='7%'>".$safact['NumeroD']."</td>
                     </tr>
@@ -518,7 +517,7 @@ class SiteController extends Controller
                     </tr>
                     <tr>
                         <td><b>Dirección: </b></td>
-                        <td>".$safact['Direc1'].$safact['Direc2']."</td>
+                        <td>".$safact['Direc1']." ".$safact['Direc2']."</td>
                         <td align='right'><b>Emisión: </b></td>
                         <td>".$safact['Fecha_Despacho']."</td>
                     </tr>
@@ -634,7 +633,7 @@ class SiteController extends Controller
                 $table->id_rol = 1;
                 $table->id_pregunta = $model->id_pregunta;
                 $table->respuesta_seguridad = $model->respuesta_seguridad;
-                $table->CodUbic = $model->CodUbic;
+                $table->CodVend = $model->CodVend;
                 $table->activo = 0;
                 $table->clave = md5("is".$model->clave);
                 
@@ -758,7 +757,7 @@ class SiteController extends Controller
         for($i=0;$i<count($data1);$i++) {
             $data[]= $data1[$i]['usuario'];
         }
-        
+
         if ($model->load(Yii::$app->request->post())) {
             $extra="";
             if ($model->reseteo==1) {
@@ -767,7 +766,7 @@ class SiteController extends Controller
             }
 
             $query = "UPDATE ISAL_USUARIO
-            SET id_rol=".$model->id_rol.", CodUbic='".$model->CodUbic."', activo=".$model->activado." $extra
+            SET id_rol=".$model->id_rol.", CodVend='".$model->CodVend."', activo=".$model->activado." $extra
             where usuario='".$model->usuario."'";
             
             $msg = $connection->createCommand($query)->execute();
@@ -789,9 +788,10 @@ class SiteController extends Controller
     public function actionBuscaUsuarios() {
         $connection = \Yii::$app->db;
         
-        $query = "select u.usuario, u.cedula, CONCAT(u.apellido,', ',u.nombre) as nombre,d.Descrip as ubicacion, r.descripcion as rol, u.activo
-            from ISAL_Usuario u, SAVEND d, ISAL_Rol r
-            WHERE u.CodVend=d.CodVend and r.id_rol=u.id_rol
+        $query = "select u.usuario, u.cedula, CONCAT(u.apellido,', ',u.nombre) as nombre,d.Descrip as ubicacion, r.descripcion as rol, u.activo 
+            from ISAL_Usuario u  
+            LEFT JOIN SAVEND d on d.CodVend=u.CodVend
+            INNER JOIN ISAL_Rol r on r.id_rol=u.id_rol 
             ORDER BY ubicacion,nombre";
 
         $pendientes = $connection->createCommand($query)->queryAll();
@@ -827,7 +827,7 @@ class SiteController extends Controller
                 from SAFACT f, SACLIE i WHERE f.TipoFac='$letra' and i.CodClie=f.CodClie and f.FechaE Between '$fecha_desde' and '$fecha_hasta' $extra
                 and F.NumeroD Not in (select NumeroD From ISAL_CorreosProcesados WHERE fecha between '$fecha_desde' and '$fecha_hasta')";
         $safact = $connection->createCommand($query)->queryAll();
-        
+
         return Json::encode($safact);
     }   
 

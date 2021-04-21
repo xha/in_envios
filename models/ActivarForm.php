@@ -11,7 +11,7 @@ class ActivarForm extends model{
     public $usuario;
     public $id_rol;
     public $reseteo;
-    public $CodUbic;
+    public $CodVend;
     public $activado = true;
     public $isNewRecord = true;
 
@@ -20,7 +20,7 @@ class ActivarForm extends model{
         return [
             [['usuario', 'id_rol', 'activado','reseteo'], 'required', 'message' => 'Campo requerido'],
             [['id_rol'], 'exist', 'skipOnError' => true, 'targetClass' => Rol::className(), 'targetAttribute' => ['id_rol' => 'id_rol']],
-            [['CodUbic'], 'string'],
+            [['CodVend'], 'string'],
             [['reseteo'], 'boolean'],
         ];
     }
@@ -32,7 +32,7 @@ class ActivarForm extends model{
             'id_rol' => 'Rol',
             'reseteo' => 'Resetear Clave (por defecto 123456)',
             'activado' => 'Activo',
-            'CodUbic' => 'Ubicación',
+            'CodVend' => 'Ubicación',
         ];
     }
 }

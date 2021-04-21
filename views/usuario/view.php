@@ -42,7 +42,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'activo',
             'id_rol',
             'id_pregunta',
-            'CodUbic',
+            'CodVend',
         ],
     ]) ?>
 

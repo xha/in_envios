@@ -5,7 +5,7 @@ use yii\widgets\ActiveForm;
 use yii\helpers\ArrayHelper;
 use app\models\Pregunta;
 use app\models\Rol;
-use app\models\Sadepo;
+use app\models\SAVEND;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Usuario */
@@ -49,8 +49,8 @@ use app\models\Sadepo;
     <?= $form->field($model, 'respuesta_seguridad')->textInput(['maxlength' => true]) ?>
     
     <label class="control-label">Ubicaci&oacute;n</label>
-    <?= Html::activeDropDownList($model, 'CodUbic',
-      ArrayHelper::map(Sadepo::find()->where(['Activo' => '1'])->OrderBy('Descrip')->all(), 'CodUbic', 'CodUbic', 'Descrip'), ['class'=>'form-control']) ?>
+    <?= $form->field($model, 'CodVend')->dropDownList(ArrayHelper::map(SAVEND::find()->where(['activo' => '1'])->OrderBy('Descrip')->all(), 'CodVend', 'CodVend', 'Descrip'), ['class' => 'form-control', 'prompt'=>'Todas'])->label(false);
+    ?>
 
     <?php ActiveForm::end(); ?>
 

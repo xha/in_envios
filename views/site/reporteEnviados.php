@@ -33,6 +33,9 @@ $fecha=date('Ymd h:m:s',$fecha);
 <body>
 	<?php $form = ActiveForm::begin(["id" => "FormIM"]); ?>
     <div class="row">
+        <div class="col-sm-3">
+            <?= $form->field($model, 'letra')->dropDownList(['A' => 'FACTURA', 'B' => 'DEV. DE FACTURA', 'C' => 'NOTA DE ENTREGA', 'D' => 'DEV. NOTA ENTREGA', 'E' => 'PEDIDO', 'F' => 'PRESUPUESTO']); ?>
+        </div>
         <div class="col-sm-4 col-md-2">
             <label>Fecha desde</label><br /><br />
             <?= $form->field($model, 'fecha_desde')->widget(DatePicker::classname(), [
@@ -87,6 +90,7 @@ $fecha=date('Ymd h:m:s',$fecha);
     function buscar_datos() {
         let fecha_desde = $("#site-fecha_desde").val();
         let fecha_hasta = $("#site-fecha_hasta").val();
+        let tipo = $("#site-letra").val();
         let codvend = $("#site-codvend").val();
         let img = $('#img_busqueda')[0];
         let div_table = $('#div_table')[0];
@@ -96,7 +100,7 @@ $fecha=date('Ymd h:m:s',$fecha);
         div_table.style.visibility = "visible";
         img.style.visibility = "visible";
         if ((fecha_desde!="") && (fecha_hasta)) {
-            $.getJSON('busca-enviados',{fecha_desde : fecha_desde, fecha_hasta : fecha_hasta},function(data){
+            $.getJSON('busca-enviados',{fecha_desde : fecha_desde, fecha_hasta : fecha_hasta, tipo: tipo},function(data){
                 var campos = Array();
                 if (data!="") {
                     $("#tabla").html("");

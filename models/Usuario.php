@@ -54,7 +54,7 @@ class Usuario extends \yii\db\ActiveRecord
             [['correo', 'nombre', 'apellido'], 'string', 'max' => 100],
             [['cedula'], 'string', 'max' => 15],
             [['clave'], 'string', 'max' => 250],
-            [['CodUbic'], 'string', 'max' => 10],
+            [['CodVend'], 'string', 'max' => 10],
             [['sexo'], 'string', 'max' => 1],
             [['respuesta_seguridad'], 'string', 'max' => 1000],
             [['id_pregunta'], 'exist', 'skipOnError' => true, 'targetClass' => Pregunta::className(), 'targetAttribute' => ['id_pregunta' => 'id_pregunta']],
@@ -81,7 +81,7 @@ class Usuario extends \yii\db\ActiveRecord
             'activo' => 'Activo',
             'id_rol' => 'Rol',
             'id_pregunta' => 'Pregunta',
-            'CodUbic' => 'Ubicación Física',
+            'CodVend' => 'Ubicación Física',
         ];
     }
 
