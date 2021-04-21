@@ -160,7 +160,7 @@ class SiteController extends Controller
 
                         $filename='';
 
-                        //if ($model->letra=='A') {
+                        if ($model->letra=='A') {
                             $pdf = new \fpdf\FPDF('L','mm','Letter');
                             $pdf->SetAutoPageBreak(false,35);
                             $pdf->AddPage();
@@ -176,9 +176,9 @@ class SiteController extends Controller
                             $pdf->Cell(180,6,utf8_decode($emp["Direc2"]),0,0,'C');
                             $pdf->Cell(40,6,'FORMA LIBRE',0,1,'L');
                             $pdf->SetX(50);
-                            $pdf->Cell(180,6,$emp["Email"],0,1,'C');
-                            //$pdf->Cell(40,6,'No. DE CONTROL:',0,1,'L');
-                            //$pdf->ln();
+                            $pdf->Cell(180,6,$emp["Email"],0,0,'C');
+                            $pdf->Cell(40,6,'No. DE CONTROL:',0,1,'L');
+                            $pdf->ln();
                             //$pdf->SetX(180);
                             //$pdf->Cell(40,6,$safact[$i]['NroCtrol'],0,1,'L');
                             
@@ -187,7 +187,7 @@ class SiteController extends Controller
                             $pdf->SetFont('Arial','',9);
                             $pdf->Cell(80,6,$safact[$i]["Fecha_Despacho"],0,0,'L');
                             $pdf->SetFont('Arial','B',9);
-                            $pdf->Cell(90,6,"No. ".$titulo,0,0,'R');
+                            $pdf->Cell(90,6,"No. FACTURA",0,0,'R');
                             $pdf->SetFont('Arial','',9);
                             $pdf->Cell(40,6,$safact[$i]["NumeroD"],0,1,'L');
 
@@ -325,7 +325,7 @@ class SiteController extends Controller
                             $pdf->Footer(200);
                             $filename="assets/".date('His',time()).".pdf";
                             $pdf->Output($filename,'F');
-                        //}
+                        }
                         
                         //ASUNTO
                         $t_titulo = str_replace("#RIFCLIENTE#", $safact[$i]['CodClie'], $t_titulo);
@@ -413,23 +413,23 @@ class SiteController extends Controller
 
                         $transaction = $connection->beginTransaction();
                         try {
-                            //if ($model->letra=='A') {
+                            if ($model->letra=='A') {
                                 Yii::$app -> mailer -> compose()
-                                -> setFrom(array($c_correo => 'Facturación - Alimentos Don Nino'))
+                                -> setFrom($c_correo)
                                 -> setTo($safact[$i]['Email'])
                                 -> attach($filename)
                                 -> setSubject($t_titulo)
                                 -> setHtmlBody($content)
                                 -> send();
                                 @unlink($filename);
-                            /*} else {
+                            } else {
                                 Yii::$app -> mailer -> compose()
                                 -> setFrom($c_correo)
                                 -> setTo($safact[$i]['Email'])
                                 -> setSubject($t_titulo)
                                 -> setHtmlBody($content)
                                 -> send();    
-                            }     */                       
+                            }                            
 
                             $transaction->commit();
                         } catch (\Exception $msg) {
