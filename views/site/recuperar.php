@@ -11,8 +11,8 @@ use app\models\Pregunta;
 $this->title = 'Recuperar Usuario';
 $this->registerJsFile('../../../frontend/web/general.js');
 ?>
-<?= ercling\pace\PaceWidget::widget(); ?>
-<div id="msj_principal"><h3><?= $msg ?></h3></div>
+
+<h3 id="msj_principal"><?= $msg ?></h3>
 
 <div class="recuperar-form">
 
@@ -42,11 +42,13 @@ $this->registerJsFile('../../../frontend/web/general.js');
 </div>
 <script type="text/javascript">
     window.onload = function() {
-        var msj_principal = trae('msj_principal').innerHTML;
-        if (msj_principal!="Registro Actualizado") {
-            oculta_mensaje('msj_principal',msj_principal,-1);
-        } else {
-            oculta_mensaje('msj_principal',msj_principal,1);
-        }
+        var msj_principal = $('#msj_principal')[0].innerHTML;
+        if (msj_principal!="") {
+            if (msj_principal!="Registro Actualizado") {
+                oculta_mensaje('msj_principal',msj_principal,-1);
+            } else {
+                oculta_mensaje('msj_principal',msj_principal,1);
+            }
+        }        
     };
 </script>

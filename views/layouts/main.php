@@ -64,11 +64,11 @@ if (Yii::$app->controller->action->id === 'login') {
     </html>
     <script type="text/javascript">
         $(document).on('ajaxStart', function () {
-            loading_show();
+            //loading_show();
         });
 
         $(document).on('ajaxStop', function (start) {
-            loading_hide();
+            //loading_hide();
         });
 
         function loading_show() {

@@ -5,7 +5,7 @@ use yii\bootstrap\ActiveForm;
 use yii\helpers\ArrayHelper;
 use app\models\Usuario;
 use app\models\Rol;
-use app\models\Sadepo;
+use app\models\SAVEND;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Rol */
@@ -13,11 +13,11 @@ use app\models\Sadepo;
 $this->title = 'Activar usuario';
 
 $this->params['breadcrumbs'][] = $this->title;
-$this->registerJsFile('../../../frontend/web/general.js');
-$this->registerCssFile('../../../frontend/web/css/general.css');
+$this->registerJsFile('@web/general.js');
+$this->registerCssFile('@web/css/general.css');
 ?>
-<?= ercling\pace\PaceWidget::widget(); ?>
-<div id="msj_principal"><h3><?= $msg ?></h3></div>
+
+<h3 id="msj_principal"><?= $msg ?></h3>
 
 <div class="activar-form">
 
@@ -35,7 +35,7 @@ $this->registerCssFile('../../../frontend/web/css/general.css');
 
     <?= $form->field($model, 'id_rol')->dropDownList(ArrayHelper::map(Rol::find()->where(['activo' => '1'])->OrderBy('descripcion')->all(), 'id_rol', 'descripcion')); ?>
     
-    <?= $form->field($model, 'CodUbic')->dropDownList(ArrayHelper::map(Sadepo::find()->where(['Activo' => '1'])->OrderBy('Descrip')->all(), 'CodUbic', 'CodUbic', 'Descrip')); ?>
+    <?= $form->field($model, 'CodVend')->dropDownList(ArrayHelper::map(SAVEND::find()->where(['activo' => '1'])->OrderBy('Descrip')->all(), 'CodVend', 'CodVend', 'Descrip'), ['class' => 'form-control']) ?>
 
     <?= $form->field($model, 'activado')->dropDownList(['1' => 'SI', '0' => 'NO']); ?>
 
@@ -52,19 +52,21 @@ $this->registerCssFile('../../../frontend/web/css/general.css');
 <script type="text/javascript">
     $(function() {
         buscar_usuarios();
-        var msj_principal = trae('msj_principal').innerHTML;
-        if (msj_principal!="Registro Actualizado") {
-            oculta_mensaje('msj_principal',msj_principal,-1);
-        } else {
-            oculta_mensaje('msj_principal',msj_principal,1);
-        }
+        var msj_principal = $('#msj_principal')[0].innerHTML;
+        if (msj_principal!="") {
+            if (msj_principal!="Registro Actualizado") {
+                oculta_mensaje('msj_principal',msj_principal,-1);
+            } else {
+                oculta_mensaje('msj_principal',msj_principal,1);
+            }
+        }        
     });
     function titulo_usuario() {
         var arreglo = new Array();
             arreglo[0] = 'Usuario';
             arreglo[1] = 'Cédula';
             arreglo[2] = 'Nombre';
-            arreglo[3] = 'Ubicación';
+            arreglo[3] = 'Vendedor';
             arreglo[4] = 'Rol';
             arreglo[5] = 'Estatus';
 
@@ -79,8 +81,9 @@ $this->registerCssFile('../../../frontend/web/css/general.css');
         var i;
         
         tabla.innerHTML = "";
-        $.getJSON('../site/busca-usuarios',{},function(data){
+        $.getJSON('busca-usuarios',{},function(data){
             var campos = Array();
+
             if (data!="") {
                 titulo_usuario();
                 for (i = 0; i < data.length; i++) {

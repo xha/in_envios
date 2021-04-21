@@ -4,15 +4,16 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use yii\helpers\ArrayHelper;
 use app\models\Pregunta;
-use app\models\Sadepo;
+use app\models\Savend;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Usuario */
 /* @var $form yii\widgets\ActiveForm */
+$this->registerJsFile('@web/general.js');
 $this->title = 'Registro';
 ?>
 
-<div id="msj_principal"><h3><?= $msg ?></h3></div>
+<h3 id="msj_principal"><?= $msg ?></h3>
 
 <div class="register-form">
 
@@ -49,7 +50,7 @@ $this->title = 'Registro';
 
     <?= $form->field($model, 'telefono')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'CodUbic')->dropDownList(ArrayHelper::map(Sadepo::find()->where(['Activo' => '1'])->OrderBy('Descrip')->all(), 'CodUbic', 'CodUbic', 'Descrip')); ?>
+    <?= $form->field($model, 'CodVend')->dropDownList(ArrayHelper::map(Savend::find()->where(['Activo' => '1'])->OrderBy('Descrip')->all(), 'CodVend', 'CodVend', 'Descrip')); ?>
     
     <div class="form-group">
         <?= Html::submitButton($model->isNewRecord ? 'Crear' : 'Actualizar', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
@@ -60,7 +61,8 @@ $this->title = 'Registro';
 </div>
 <script type="text/javascript">
     window.onload = function() {
-        var msj_principal = trae('msj_principal').innerHTML;
+        var msj_principal = $('#msj_principal')[0].innerHTML;
+
         if (msj_principal!="") {
             oculta_mensaje('msj_principal',msj_principal,1);
         }
