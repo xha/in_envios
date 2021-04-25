@@ -142,7 +142,7 @@ class SiteController extends Controller
                                 $titulo = "FACTURA";
                             break;
                             case "B":
-                                $titulo = "DEV. DE FACTURA";
+                                $titulo = "NOTA DE CREDITO";
                             break;
                             case "C":
                                 $titulo = "NOTA DE ENTREGA";

@@ -34,7 +34,7 @@ $fecha=date('Ymd h:m:s',$fecha);
 	<?php $form = ActiveForm::begin(["id" => "FormIM"]); ?>
     <div class="row">
         <div class="col-sm-3">
-            <?= $form->field($model, 'letra')->dropDownList(['A' => 'FACTURA', 'B' => 'DEV. DE FACTURA', 'C' => 'NOTA DE ENTREGA', 'D' => 'DEV. NOTA ENTREGA', 'E' => 'PEDIDO', 'F' => 'PRESUPUESTO']); ?>
+            <?= $form->field($model, 'letra')->dropDownList(['A' => 'FACTURA', 'B' => 'NOTA DE CREDITO', 'C' => 'NOTA DE ENTREGA', 'D' => 'DEV. NOTA ENTREGA', 'E' => 'PEDIDO', 'F' => 'PRESUPUESTO']); ?>
         </div>
         <div class="col-sm-4 col-md-2">
             <label>Fecha desde</label><br /><br />

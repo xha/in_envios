@@ -80,7 +80,7 @@ if (Yii::$app->user->isGuest) {
         ?>
         </div>
         <div class="col-sm-3">
-            <?= $form->field($model, 'letra')->dropDownList(['A' => 'FACTURA', 'B' => 'DEV. DE FACTURA', 'C' => 'NOTA DE ENTREGA', 'D' => 'DEV. NOTA ENTREGA', 'E' => 'PEDIDO', 'F' => 'PRESUPUESTO']); ?>
+            <?= $form->field($model, 'letra')->dropDownList(['A' => 'FACTURA', 'B' => 'NOTA DE CREDITO', 'C' => 'NOTA DE ENTREGA', 'D' => 'DEV. NOTA ENTREGA', 'E' => 'PEDIDO', 'F' => 'PRESUPUESTO']); ?>
         </div>
         <div class="col-sm-12">
             <?= $form->field($model, 'asunto')->textInput(['maxlength' => true, 'placeholder' => 'Dejar en blanco para colocar el asunto por defecto']); ?>
